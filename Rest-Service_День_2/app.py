@@ -45,19 +45,29 @@ def get_product(product_id):
   return jsonify({'product': product})
 
 
-# Добавление нового продукта с атоматической генерацией шв
-@app.route('/products/', methods=['POST'])
-def create_products():
-  if not request.json or not 'name' in request.json:
-    abort(400)
+# Добавление нового продукта с атоматической генерацией id
+@app.route('/products/new/name=<string:product_name>/description=<string:product_dscr>', methods=['GET'])
+def create_products(product_name, product_dscr):
   product = {
     'id': products[-1]['id'] + 1,
-    'name': request.json['name'],
-    'dscr': request.json.get('dscr', ""),
+    'name': product_name,
+    'dscr': product_dscr,
   }  
   products.append(product)
-  return jsonify({'product': product}), 201
+  return jsonify({'Response': 'Successful product addition', 'product': product}), 201
 
+# Обновление существующего продутка
+@app.route('/products/update/<int:product_id>/name=<string:product_name>/description=<string:product_dscr>', methods=['GET'])
+def update(product_id, product_name, product_dscr):
+  for i in range(0, len(products)):
+    if products[i]['id'] == product_id:
+      if product_name != '':
+        products[i]['name'] = product_name
+      if product_dscr != '':
+        products[i]['product_dscr'] = product_dscr
+  return jsonify({'Response': 'Successful product update', 'product': product}), 201
+# http://127.0.0.1:5000/products/new/name='Butter'/description='Slippy Butter'
+# http://127.0.0.1:5000/products/update/product_id=2/name='Bad Butter'/description=''
 # Удаление продукта
 @app.route('/products/delete/<int:product_id>', methods=['GET'])
 def delete_product(product_id):
@@ -68,6 +78,8 @@ def delete_product(product_id):
       products.pop(i)
       break
     return f'Complete deleting {product_id} product'
+  
+  
 @app.route("/", methods=['GET', 'POST', 'PUT', 'DELETE'])
 def hello():
     # returning string
