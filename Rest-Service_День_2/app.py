@@ -64,8 +64,8 @@ def update(product_id, product_name, product_dscr):
       if product_name != '':
         products[i]['name'] = product_name
       if product_dscr != '':
-        products[i]['product_dscr'] = product_dscr
-  return jsonify({'Response': 'Successful product update', 'product': product}), 201
+        products[i]['dscr'] = product_dscr
+  return jsonify({'Response': 'Successful product update', 'product': product_id}), 201
 # http://127.0.0.1:5000/products/new/name='Butter'/description='Slippy Butter'
 # http://127.0.0.1:5000/products/update/product_id=2/name='Bad Butter'/description=''
 # Удаление продукта
@@ -76,8 +76,8 @@ def delete_product(product_id):
   for i in range(0, len(products)):
     if products[i]['id'] == product_id:
       products.pop(i)
-      break
-    return f'Complete deleting {product_id} product'
+      return f'Complete deleting {product_id} product'
+  abort(404)
   
   
 @app.route("/", methods=['GET', 'POST', 'PUT', 'DELETE'])
